@@ -131,7 +131,7 @@ def plot_ingredient_table_grid(
             ax[row][3].set_title(columns[3], fontsize=16, fontweight="bold")
 
     plt.tight_layout()
-    plt.savefig("all_items_grid.png", dpi=200)
+    plt.savefig("all_items_grid.pdf", dpi=200)
     plt.show()
 
 
