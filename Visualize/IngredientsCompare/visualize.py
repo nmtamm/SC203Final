@@ -3,6 +3,128 @@ from matplotlib.patches import Rectangle
 import matplotlib.image as mpimg
 import json
 import os
+import matplotlib
+
+
+def split_ingredients_if_short(
+    ingredients, ax, indices=None, gt_indices=None, fontsize=26, threshold=0.45
+):
+    if not ingredients:
+        return False  # Nothing to draw
+
+    renderer = plt.gcf().canvas.get_renderer()
+    widths = []
+    for word in ingredients:
+        text = ax.text(0.5, 0.5, word, fontsize=fontsize, ha="center", va="center")
+        plt.draw()
+        bbox = text.get_window_extent(renderer=renderer)
+        ax_bbox = ax.get_window_extent(renderer=renderer)
+        text_width_frac = bbox.width / ax_bbox.width
+        widths.append(text_width_frac)
+        text.remove()
+
+    group2_indices = [i for i, w in enumerate(widths) if w <= threshold]
+    group1_indices = [i for i, w in enumerate(widths) if w > threshold]
+
+    group2 = [ingredients[i] for i in group2_indices]
+    group2_idx = [indices[i] if indices else None for i in group2_indices]
+    group1 = [ingredients[i] for i in group1_indices]
+    group1_idx = [indices[i] if indices else None for i in group1_indices]
+
+    if not group2 and not group1:
+        return False
+
+    # Calculate total number of rows needed
+    n_rows_2col = (len(group2) + 1) // 2
+    n_rows_1col = len(group1)
+    total_rows = max(n_rows_2col, (len(group2) // 2)) + n_rows_1col
+    total_rows = (
+        max(n_rows_2col, len(group1))
+        if group2 and not group1
+        else n_rows_2col + n_rows_1col
+    )
+    if group2 and group1:
+        total_rows = n_rows_2col + n_rows_1col
+    elif group2:
+        total_rows = n_rows_2col
+    elif group1:
+        total_rows = n_rows_1col
+
+    step = 1.0 / (total_rows + 1)
+    y = 1.0 - step / 2
+
+    # Draw two-column group first
+    if group2:
+        mid = (len(group2) + 1) // 2
+        col1 = group2[:mid]
+        col2 = group2[mid:]
+        idx1 = group2_idx[:mid]
+        idx2 = group2_idx[mid:]
+        y1 = y
+        y2 = y
+        for i in range(max(len(col1), len(col2))):
+            if i < len(col1):
+                word = col1[i]
+                idx = idx1[i]
+                color = (
+                    "blue"
+                    if gt_indices and idx in gt_indices
+                    else "red" if idx is not None else "black"
+                )
+                ax.text(
+                    0.25,
+                    y1,
+                    word,
+                    ha="center",
+                    va="top",
+                    fontsize=fontsize,
+                    color=color,
+                    transform=ax.transAxes,
+                )
+            if i < len(col2):
+                word = col2[i]
+                idx = idx2[i]
+                color = (
+                    "blue"
+                    if gt_indices and idx in gt_indices
+                    else "red" if idx is not None else "black"
+                )
+                ax.text(
+                    0.75,
+                    y2,
+                    word,
+                    ha="center",
+                    va="top",
+                    fontsize=fontsize,
+                    color=color,
+                    transform=ax.transAxes,
+                )
+            y1 -= step
+            y2 -= step
+        y = min(y1, y2)
+
+    # Draw one-column group below
+    if group1:
+        y1 = y
+        for word, idx in zip(group1, group1_idx):
+            color = (
+                "blue"
+                if gt_indices and idx in gt_indices
+                else "red" if idx is not None else "black"
+            )
+            ax.text(
+                0.5,
+                y1,
+                word,
+                ha="center",
+                va="top",
+                fontsize=fontsize,
+                color=color,
+                transform=ax.transAxes,
+            )
+            y1 -= step
+
+    return True
 
 
 def plot_ingredient_table_grid(
@@ -73,62 +195,93 @@ def plot_ingredient_table_grid(
 
         # 2. Ours column
         ax[row][1].axis("off")
-        y = y_start
-        for word, idx in zip(ours_ingredients, ours_indices):
-            color = "blue" if idx in gt_indices else "red"
-            ax[row][1].text(
-                0.5,
-                y,
-                word,
-                ha="center",
-                va="top",
-                fontsize=14,
-                color=color,
-                transform=ax[row][1].transAxes,
+        # Try to split into two columns if possible
+        if not split_ingredients_if_short(
+            ours_ingredients,
+            ax[row][1],
+            indices=ours_indices,
+            gt_indices=gt_indices,
+            fontsize=26,
+            threshold=0.45,
+        ):
+            ours_step = (
+                1.0 / (len(ours_ingredients) + 1) if len(ours_ingredients) > 0 else 1.0
             )
-            y -= step
+            ours_y = 1.0 - ours_step / 2
+            for word, idx in zip(ours_ingredients, ours_indices):
+                color = "blue" if idx in gt_indices else "red"
+                ax[row][1].text(
+                    0.5,
+                    ours_y,
+                    word,
+                    ha="center",
+                    va="top",
+                    fontsize=26,
+                    color=color,
+                    transform=ax[row][1].transAxes,
+                )
+                ours_y -= ours_step
         draw_column_box(ax[row][1])
         if row == 0:
-            ax[row][1].set_title(columns[1], fontsize=16, fontweight="bold")
+            ax[row][1].set_title(columns[1], fontsize=28, fontweight="bold")
 
         # 3. Retrieval column
         ax[row][2].axis("off")
-        y = y_start
-        for word, idx in zip(retrieval_ingredients, retrieval_indices):
-            color = "blue" if idx in gt_indices else "red"
-            ax[row][2].text(
-                0.5,
-                y,
-                word,
-                ha="center",
-                va="top",
-                fontsize=14,
-                color=color,
-                transform=ax[row][2].transAxes,
+        if not split_ingredients_if_short(
+            retrieval_ingredients,
+            ax[row][2],
+            indices=retrieval_indices,
+            gt_indices=gt_indices,
+            fontsize=26,
+            threshold=0.45,
+        ):
+            retrieval_step = (
+                1.0 / (len(retrieval_ingredients) + 1)
+                if len(retrieval_ingredients) > 0
+                else 1.0
             )
-            y -= step
+            retrieval_y = 1.0 - retrieval_step / 2
+            for word, idx in zip(retrieval_ingredients, retrieval_indices):
+                color = "blue" if idx in gt_indices else "red"
+                ax[row][2].text(
+                    0.5,
+                    retrieval_y,
+                    word,
+                    ha="center",
+                    va="top",
+                    fontsize=26,
+                    color=color,
+                    transform=ax[row][2].transAxes,
+                )
+                retrieval_y -= retrieval_step
         draw_column_box(ax[row][2])
         if row == 0:
-            ax[row][2].set_title(columns[2], fontsize=16, fontweight="bold")
+            ax[row][2].set_title(columns[2], fontsize=28, fontweight="bold")
 
         # 4. Ground Truth column
         ax[row][3].axis("off")
-        y = y_start
-        for word in gt_ingredients:
-            ax[row][3].text(
-                0.5,
-                y,
-                word,
-                ha="center",
-                va="top",
-                fontsize=14,
-                color="black",
-                transform=ax[row][3].transAxes,
+        if not split_ingredients_if_short(
+            gt_ingredients, ax[row][3], fontsize=26, threshold=0.45
+        ):
+            gt_step = (
+                1.0 / (len(gt_ingredients) + 1) if len(gt_ingredients) > 0 else 1.0
             )
-            y -= step
+            gt_y = 1.0 - gt_step / 2
+            for word in gt_ingredients:
+                ax[row][3].text(
+                    0.5,
+                    gt_y,
+                    word,
+                    ha="center",
+                    va="top",
+                    fontsize=26,
+                    color="black",
+                    transform=ax[row][3].transAxes,
+                )
+                gt_y -= gt_step
         draw_column_box(ax[row][3])
         if row == 0:
-            ax[row][3].set_title(columns[3], fontsize=16, fontweight="bold")
+            ax[row][3].set_title(columns[3], fontsize=28, fontweight="bold")
 
     plt.tight_layout()
     plt.savefig("all_items_grid.pdf", dpi=200)
