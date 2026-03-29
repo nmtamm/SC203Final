@@ -4,127 +4,118 @@ import matplotlib.image as mpimg
 import json
 import os
 import matplotlib
+import textwrap
+from matplotlib.font_manager import FontProperties
 
 
-def split_ingredients_if_short(
-    ingredients, ax, indices=None, gt_indices=None, fontsize=26, threshold=0.45
+def draw_two_paragraphs(
+    ax, first_text, second_text, fontsize=26, color1="blue", color2="red", margin_px=10
+):
+    # Estimate number of lines for each paragraph
+    def count_lines(text):
+        return text.count("\n") + 1 if text else 0
+
+    n1 = count_lines(first_text)
+    n2 = count_lines(second_text)
+
+    # Line height in axes coordinates (approximate)
+    bbox = ax.get_window_extent()
+    axes_height_px = bbox.height
+    line_height_px = fontsize * 1.5  # 1.2 is a line spacing factor
+    total_height_px = (n1 + n2) * line_height_px
+    # Center the block of text in the axes
+    y_center = 0.5
+    if n1 > 0 and n2 > 0:
+        # If both exist, stack them with a small gap
+        y1 = y_center + (n2 * line_height_px) / (2 * axes_height_px)
+        y2 = y_center - (n1 * line_height_px) / (2 * axes_height_px)
+    elif n1 > 0:
+        y1 = y_center
+        y2 = None
+    elif n2 > 0:
+        y1 = None
+        y2 = y_center
+    else:
+        y1 = y2 = y_center
+
+    if n1 > 0:
+        ax.text(
+            0.5,
+            y1,
+            first_text,
+            ha="center",
+            va="center",
+            fontsize=fontsize,
+            color=color1,
+            transform=ax.transAxes,
+            wrap=True,
+        )
+    if n2 > 0:
+        ax.text(
+            0.5,
+            y2,
+            second_text,
+            ha="center",
+            va="center",
+            fontsize=fontsize,
+            color=color2,
+            transform=ax.transAxes,
+            wrap=True,
+        )
+
+
+def draw_ingredients_paragraph(
+    ax, ingredients, gt_ingredients, color="black", fontsize=26, margin_px=10
 ):
     if not ingredients:
-        return False  # Nothing to draw
+        return
+    text = " ".join(ingredients)
 
-    renderer = plt.gcf().canvas.get_renderer()
-    widths = []
-    for word in ingredients:
-        text = ax.text(0.5, 0.5, word, fontsize=fontsize, ha="center", va="center")
-        plt.draw()
-        bbox = text.get_window_extent(renderer=renderer)
-        ax_bbox = ax.get_window_extent(renderer=renderer)
-        text_width_frac = bbox.width / ax_bbox.width
-        widths.append(text_width_frac)
-        text.remove()
+    # Estimate how many characters fit in the box width (minus margin)
+    fig = ax.figure
+    renderer = fig.canvas.get_renderer()
+    bbox = ax.get_window_extent(renderer=renderer)
+    box_width_px = bbox.width * 0.94  # box width is 94% of axes width
+    usable_width_px = max(10, box_width_px - 2 * margin_px)
 
-    group2_indices = [i for i, w in enumerate(widths) if w <= threshold]
-    group1_indices = [i for i, w in enumerate(widths) if w > threshold]
+    avg_char_px = fontsize * 0.6
+    max_chars_per_line = max(10, int(usable_width_px // avg_char_px))
 
-    group2 = [ingredients[i] for i in group2_indices]
-    group2_idx = [indices[i] if indices else None for i in group2_indices]
-    group1 = [ingredients[i] for i in group1_indices]
-    group1_idx = [indices[i] if indices else None for i in group1_indices]
+    correct_ingredients = []
+    wrong_ingredients = []
 
-    if not group2 and not group1:
-        return False
+    for ingredient in ingredients:
+        if ingredient in gt_ingredients:
+            correct_ingredients.append(ingredient)
+        else:
+            wrong_ingredients.append(ingredient)
 
-    # Calculate total number of rows needed
-    n_rows_2col = (len(group2) + 1) // 2
-    n_rows_1col = len(group1)
-    total_rows = max(n_rows_2col, (len(group2) // 2)) + n_rows_1col
-    total_rows = (
-        max(n_rows_2col, len(group1))
-        if group2 and not group1
-        else n_rows_2col + n_rows_1col
+    correct_ingredients_text = " ".join(correct_ingredients)
+    wrong_ingredients_text = " ".join(wrong_ingredients)
+
+    correct_wrapped = "\n".join(
+        textwrap.wrap(correct_ingredients_text, width=max_chars_per_line)
     )
-    if group2 and group1:
-        total_rows = n_rows_2col + n_rows_1col
-    elif group2:
-        total_rows = n_rows_2col
-    elif group1:
-        total_rows = n_rows_1col
+    wrong_wrapped = "\n".join(
+        textwrap.wrap(wrong_ingredients_text, width=max_chars_per_line)
+    )
 
-    step = 1.0 / (total_rows + 1)
-    y = 1.0 - step / 2
+    wrapped_text = "\n".join(textwrap.wrap(text, width=max_chars_per_line))
 
-    # Draw two-column group first
-    if group2:
-        mid = (len(group2) + 1) // 2
-        col1 = group2[:mid]
-        col2 = group2[mid:]
-        idx1 = group2_idx[:mid]
-        idx2 = group2_idx[mid:]
-        y1 = y
-        y2 = y
-        for i in range(max(len(col1), len(col2))):
-            if i < len(col1):
-                word = col1[i]
-                idx = idx1[i]
-                color = (
-                    "blue"
-                    if gt_indices and idx in gt_indices
-                    else "red" if idx is not None else "black"
-                )
-                ax.text(
-                    0.25,
-                    y1,
-                    word,
-                    ha="center",
-                    va="top",
-                    fontsize=fontsize,
-                    color=color,
-                    transform=ax.transAxes,
-                )
-            if i < len(col2):
-                word = col2[i]
-                idx = idx2[i]
-                color = (
-                    "blue"
-                    if gt_indices and idx in gt_indices
-                    else "red" if idx is not None else "black"
-                )
-                ax.text(
-                    0.75,
-                    y2,
-                    word,
-                    ha="center",
-                    va="top",
-                    fontsize=fontsize,
-                    color=color,
-                    transform=ax.transAxes,
-                )
-            y1 -= step
-            y2 -= step
-        y = min(y1, y2)
+    draw_two_paragraphs(ax, correct_wrapped, wrong_wrapped, fontsize=26)
 
-    # Draw one-column group below
-    if group1:
-        y1 = y
-        for word, idx in zip(group1, group1_idx):
-            color = (
-                "blue"
-                if gt_indices and idx in gt_indices
-                else "red" if idx is not None else "black"
-            )
-            ax.text(
-                0.5,
-                y1,
-                word,
-                ha="center",
-                va="top",
-                fontsize=fontsize,
-                color=color,
-                transform=ax.transAxes,
-            )
-            y1 -= step
-
-    return True
+    if not gt_ingredients:
+        ax.text(
+            0.5,
+            0.5,
+            wrapped_text,
+            ha="center",
+            va="center",
+            fontsize=fontsize,
+            color=color,
+            transform=ax.transAxes,
+            wrap=True,
+        )
 
 
 def plot_ingredient_table_grid(
@@ -145,7 +136,7 @@ def plot_ingredient_table_grid(
     )  # 0.5 per ingredient, min 4 per row
 
     fig, ax = plt.subplots(n_rows, 4, figsize=(20, total_height))
-    columns = ["Image", "Inverse Cooking", "Retrieved", "Ground Truth"]
+    columns = ["Image", "Inverse Cooking", "via Retrieval", "Ground Truth"]
 
     if n_rows == 1:
         ax = [ax]  # Ensure ax is always a list of rows
@@ -162,9 +153,7 @@ def plot_ingredient_table_grid(
         ax[row][0].axis("off")
         image_path = item.get("image_path")
         if image_path:
-            image_path = image_path.replace(
-                "\\", "/"
-            )  # Replace backslashes with forward slashes
+            image_path = image_path.replace("\\", "/")
             print("Trying to load:", image_path, "Exists:", os.path.exists(image_path))
         if image_path and os.path.exists(image_path):
             img = mpimg.imread(image_path)
@@ -172,7 +161,6 @@ def plot_ingredient_table_grid(
         else:
             ax[row][0].text(0.5, 0.5, "Image", ha="center", va="center", fontsize=12)
 
-        # Helper to draw a single box around all text in a column
         def draw_column_box(axx):
             rect = Rectangle(
                 (0.03, 0.01),
@@ -186,108 +174,44 @@ def plot_ingredient_table_grid(
             )
             axx.add_patch(rect)
 
-        # Calculate the max number of items in this row (across all three columns)
-        max_items = max(
-            len(ours_ingredients), len(retrieval_ingredients), len(gt_ingredients), 1
-        )
-        step = 1.0 / (max_items + 1)
-        y_start = 1.0 - step / 2
-
         # 2. Ours column
         ax[row][1].axis("off")
-        # Try to split into two columns if possible
-        if not split_ingredients_if_short(
-            ours_ingredients,
-            ax[row][1],
-            indices=ours_indices,
-            gt_indices=gt_indices,
-            fontsize=26,
-            threshold=0.45,
-        ):
-            ours_step = (
-                1.0 / (len(ours_ingredients) + 1) if len(ours_ingredients) > 0 else 1.0
-            )
-            ours_y = 1.0 - ours_step / 2
-            for word, idx in zip(ours_ingredients, ours_indices):
-                color = "blue" if idx in gt_indices else "red"
-                ax[row][1].text(
-                    0.5,
-                    ours_y,
-                    word,
-                    ha="center",
-                    va="top",
-                    fontsize=26,
-                    color=color,
-                    transform=ax[row][1].transAxes,
-                )
-                ours_y -= ours_step
+        draw_ingredients_paragraph(
+            ax[row][1], ours_ingredients, gt_ingredients, color="black", fontsize=26
+        )
         draw_column_box(ax[row][1])
         if row == 0:
             ax[row][1].set_title(columns[1], fontsize=28, fontweight="bold")
 
         # 3. Retrieval column
         ax[row][2].axis("off")
-        if not split_ingredients_if_short(
-            retrieval_ingredients,
+        draw_ingredients_paragraph(
             ax[row][2],
-            indices=retrieval_indices,
-            gt_indices=gt_indices,
+            retrieval_ingredients,
+            gt_ingredients,
+            color="black",
             fontsize=26,
-            threshold=0.45,
-        ):
-            retrieval_step = (
-                1.0 / (len(retrieval_ingredients) + 1)
-                if len(retrieval_ingredients) > 0
-                else 1.0
-            )
-            retrieval_y = 1.0 - retrieval_step / 2
-            for word, idx in zip(retrieval_ingredients, retrieval_indices):
-                color = "blue" if idx in gt_indices else "red"
-                ax[row][2].text(
-                    0.5,
-                    retrieval_y,
-                    word,
-                    ha="center",
-                    va="top",
-                    fontsize=26,
-                    color=color,
-                    transform=ax[row][2].transAxes,
-                )
-                retrieval_y -= retrieval_step
+        )
         draw_column_box(ax[row][2])
         if row == 0:
             ax[row][2].set_title(columns[2], fontsize=28, fontweight="bold")
 
         # 4. Ground Truth column
         ax[row][3].axis("off")
-        if not split_ingredients_if_short(
-            gt_ingredients, ax[row][3], fontsize=26, threshold=0.45
-        ):
-            gt_step = (
-                1.0 / (len(gt_ingredients) + 1) if len(gt_ingredients) > 0 else 1.0
-            )
-            gt_y = 1.0 - gt_step / 2
-            for word in gt_ingredients:
-                ax[row][3].text(
-                    0.5,
-                    gt_y,
-                    word,
-                    ha="center",
-                    va="top",
-                    fontsize=26,
-                    color="black",
-                    transform=ax[row][3].transAxes,
-                )
-                gt_y -= gt_step
+        empty = []
+        draw_ingredients_paragraph(
+            ax[row][3], gt_ingredients, empty, color="black", fontsize=26
+        )
         draw_column_box(ax[row][3])
         if row == 0:
             ax[row][3].set_title(columns[3], fontsize=28, fontweight="bold")
 
     plt.tight_layout()
-    plt.savefig("all_items_grid.pdf", dpi=200)
+    plt.savefig("all_items_grid", dpi=plt.gcf().dpi)
     plt.show()
 
 
+# ...existing code...
 # Usage
 JSON_path = "path to your combined JSON file including indices and ingredients list for ground truth, retrieval, and generative, with image ids and image paths"
 with open(JSON_path, "r", encoding="utf-8") as f:
