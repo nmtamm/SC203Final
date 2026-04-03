@@ -1,0 +1,160 @@
+[
+  {
+    "number": 13658,
+    "pair id for retrieval": "Pair14128",
+    "ground truth recipe id": "452e0ff98b",
+    "image id": "Image30289fed55.jpg",
+    "gt_ingredients": [
+      "cinnamon",
+      "sugar",
+      "tortilla",
+      "butter"
+    ],
+    "gt_indices": [
+      35,
+      30,
+      167,
+      33
+    ],
+    "retrieved_ingredients": [
+      "flour",
+      "salt",
+      "baking_powder",
+      "margarine",
+      "water"
+    ],
+    "retrieved_indices": [
+      34,
+      7,
+      37,
+      119,
+      15
+    ],
+    "generated_ingredients": [
+      "tortilla",
+      "cinnamon",
+      "butter",
+      "sugar"
+    ],
+    "generated_indices": [
+      167,
+      35,
+      33,
+      30
+    ]
+  },
+  {
+    "number": 15070,
+    "pair id for retrieval": "Pair15581",
+    "ground truth recipe id": "4c6ff09fa9",
+    "image id": "Image271be18eb0.jpg",
+    "gt_ingredients": [
+      "butter",
+      "sugar",
+      "egg",
+      "egg",
+      "flour",
+      "baking_powder",
+      "salt",
+      "juice",
+      "lime",
+      "chips"
+    ],
+    "gt_indices": [
+      33,
+      30,
+      59,
+      59,
+      34,
+      37,
+      7,
+      22,
+      101,
+      76
+    ],
+    "retrieved_ingredients": [
+      "biscuit",
+      "milk",
+      "onion",
+      "onion"
+    ],
+    "retrieved_indices": [
+      254,
+      65,
+      9,
+      9
+    ],
+    "generated_ingredients": [
+      "sugar",
+      "flour",
+      "butter",
+      "lime",
+      "salt",
+      "baking_soda",
+      "juice",
+      "egg",
+      "baking_powder",
+      "chips"
+    ],
+    "generated_indices": [
+      30,
+      34,
+      33,
+      101,
+      7,
+      36,
+      22,
+      59,
+      37,
+      76
+    ]
+  },
+  {
+    "number": 35326,
+    "pair id for retrieval": "Pair36499",
+    "ground truth recipe id": "b521add13b",
+    "image id": "Image09c7e037dc.jpg",
+    "gt_ingredients": [
+      "liqueur",
+      "liqueur",
+      "juice",
+      "ice",
+      "lemon"
+    ],
+    "gt_indices": [
+      54,
+      54,
+      22,
+      58,
+      56
+    ],
+    "retrieved_ingredients": [
+      "tequila",
+      "triple_sec",
+      "sour_mix",
+      "salt",
+      "lime"
+    ],
+    "retrieved_indices": [
+      87,
+      88,
+      433,
+      7,
+      101
+    ],
+    "generated_ingredients": [
+      "juice",
+      "vodka",
+      "liqueur",
+      "lemon",
+      "ice"
+    ],
+    "generated_indices": [
+      22,
+      298,
+      54,
+      56,
+      58
+    ]
+  }
+]

@@ -1,0 +1,160 @@
+[
+  {
+    "number": 14166,
+    "pair id for retrieval": "Pair14651",
+    "ground truth recipe id": "47a6b820ee",
+    "image id": "Imagebe6fd1315e.jpg",
+    "gt_ingredients": [
+      "bread",
+      "bacon",
+      "cheese",
+      "pepper"
+    ],
+    "gt_indices": [
+      77,
+      81,
+      2,
+      10
+    ],
+    "retrieved_ingredients": [
+      "oil",
+      "oats",
+      "sugar",
+      "honey",
+      "milk",
+      "pepitas",
+      "almonds",
+      "coconut",
+      "cocoa",
+      "cinnamon",
+      "nutmeg",
+      "salt"
+    ],
+    "retrieved_indices": [
+      12,
+      63,
+      30,
+      97,
+      65,
+      407,
+      107,
+      19,
+      161,
+      35,
+      118,
+      7
+    ],
+    "generated_ingredients": [
+      "sugar",
+      "butter",
+      "salt",
+      "pecans",
+      "extract",
+      "oats",
+      "flour",
+      "cinnamon"
+    ],
+    "generated_indices": [
+      30,
+      33,
+      7,
+      60,
+      69,
+      63,
+      34,
+      35
+    ]
+  },
+  {
+    "number": 14347,
+    "pair id for retrieval": "Pair14835",
+    "ground truth recipe id": "487c3faff2",
+    "image id": "Image16251c6bbd.jpg",
+    "gt_ingredients": [
+      "bread",
+      "egg",
+      "cheese",
+      "jam"
+    ],
+    "gt_indices": [
+      77,
+      59,
+      2,
+      416
+    ],
+    "retrieved_ingredients": [
+      "juice",
+      "splenda_granular",
+      "rhubarb",
+      "berries",
+      "extract"
+    ],
+    "retrieved_indices": [
+      22,
+      520,
+      29,
+      142,
+      69
+    ],
+    "generated_ingredients": [
+      "sugar",
+      "water",
+      "milk"
+    ],
+    "generated_indices": [
+      30,
+      15,
+      65
+    ]
+  },
+  {
+    "number": 6636,
+    "pair id for retrieval": "Pair6855",
+    "ground truth recipe id": "21d6a60d64",
+    "image id": "Image75f651bb4d.jpg",
+    "gt_ingredients": [
+      "cookie",
+      "chips"
+    ],
+    "gt_indices": [
+      72,
+      76
+    ],
+    "retrieved_ingredients": [
+      "pastry_dough",
+      "coffee",
+      "sugar",
+      "egg",
+      "pen"
+    ],
+    "retrieved_indices": [
+      613,
+      219,
+      30,
+      59,
+      1146
+    ],
+    "generated_ingredients": [
+      "sugar",
+      "flour",
+      "egg",
+      "salt",
+      "butter",
+      "baking_powder",
+      "milk",
+      "extract",
+      "baking_soda"
+    ],
+    "generated_indices": [
+      30,
+      34,
+      59,
+      7,
+      33,
+      37,
+      65,
+      69,
+      36
+    ]
+  }
+]

@@ -1,24 +1,12 @@
 import json
 
-pair = [
-    6855,
-    14651,
-    14835,
-    1243,
-    2119,
-    4062,
-    14128,
-    15581,
-    36499,
-    3009,
-    20554,
-    50048,
-]
+pair = [2119, 2682, 4459, 5092, 8905, 9978, 10418, 12894, 28628, 31164, 32356, 34520]
 
 
 def filter_retrieval_pairs(pair):
-    input_path = "path to your JSON file containing all retrieval pairs"
-    output_path = "path to your output JSON file for selected retrieval pairs"
+    # This function used to find the ground truth and retrieved recipes based on the given pair ID list
+    input_path = "../Retrieval/retrieval_pairs.json"
+    output_path = "results/selected_retrieval_pairs_for_instructions.json"
 
     # Load pairs from JSON file
     with open(input_path, "r") as f:
@@ -39,10 +27,8 @@ def filter_retrieval_pairs(pair):
 
 
 def add_detail_to_filtered_pairs():
-    detailed_path = "path to your JSON file containing detailed retrieval pairs"
-    output_path = (
-        "path to your output JSON file for adding detail to selected retrieval pairs"
-    )
+    detailed_path = "data/mapping_ic_retrieval_groundtruth.json"
+    output_path = "results/selected_detailed_pairs_for_instructions.json"
 
     # Load the JSON file with detailed items
     with open(detailed_path, "r") as f:
@@ -66,5 +52,5 @@ def add_detail_to_filtered_pairs():
 
 
 # Usage
-# filter_retrieval_pairs(pair)
-# add_detail_to_filtered_pairs()
+filter_retrieval_pairs(pair)
+add_detail_to_filtered_pairs()

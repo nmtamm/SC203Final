@@ -217,4 +217,4 @@ JSON_path = "path to your combined JSON file including indices and ingredients l
 with open(JSON_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
-plot_ingredient_table_grid(data["results"])
+plot_ingredient_table_grid(data)

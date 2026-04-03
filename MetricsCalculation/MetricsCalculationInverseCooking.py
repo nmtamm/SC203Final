@@ -2,8 +2,15 @@ import json
 import torch
 import os
 import pickle
-from src.utils.metrics import softIoU
-from src.utils.metrics import update_error_types, compute_metrics
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from InverseCooking.src.utils.metrics import (
+    softIoU,
+    update_error_types,
+    compute_metrics,
+)
 from rouge_score import rouge_scorer
 import sacrebleu
 import zipfile
@@ -83,6 +90,10 @@ def evaluate_ingredient_pairs(data_folder, full_ingr_path, brief_ingr_path, voca
     results = []
     predicted_instr_list = []
     ground_truth_instr_list = []
+    gt_ingredients_names = []
+    pred_ingredients_names = []
+    gt_indices = []
+    pred_indices = []
 
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
 
@@ -182,18 +193,16 @@ def evaluate_ingredient_pairs(data_folder, full_ingr_path, brief_ingr_path, voca
                     "f1": ret_metrics["f1"][0] if ret_metrics["f1"] else None,
                     "rougeL": rouge_l,
                     "sacrebleu": bleu,
+                    "predicted_instructions": pred_instrs,
+                    "ground_truth_instructions": gt_instrs,
+                    "gt_ingredients": gt_ingredients_names,
+                    "gt_indices": gt_indices,
+                    "pred_ingredients": pred_ingredients_names,
+                    "pred_indices": pred_indices,
                 }
             )
 
-    return (
-        results,
-        predicted_instr_list,
-        ground_truth_instr_list,
-        gt_ingredients_names,
-        pred_ingredients_names,
-        gt_indices,
-        pred_indices,
-    )
+    return results
 
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
@@ -203,7 +212,8 @@ data_folder = ""
 with open(vocab_path, "rb") as f:
     ingr_vocab = pickle.load(f)
 
-full_vocab_path = "your path to recipe1m_vocab_ingrs.json"
+# full_vocab_path = "your path to recipe1m_vocab_ingrs.json"
+full_vocab_path = os.path.join(root_dir, "data", "recipe1m_vocab_ingrs.json")
 brief_vocab_path = os.path.join(root_dir, "data", "ingr_vocab.json")
 
 
@@ -223,15 +233,7 @@ def calculate_metrics_from_zip(dir):
             data_folder = extract_path
 
             # Evaluate ingredient pairs
-            (
-                result,
-                predicted_instr_list,
-                ground_truth_instr_list,
-                gt_ingredients_names,
-                pred_ingredients_names,
-                gt_indices,
-                pred_indices,
-            ) = evaluate_ingredient_pairs(
+            result = evaluate_ingredient_pairs(
                 data_folder=data_folder,
                 full_ingr_path=full_vocab_path,
                 brief_ingr_path=brief_vocab_path,
@@ -241,27 +243,13 @@ def calculate_metrics_from_zip(dir):
             # Calculate averages
             ious = [r["iou"] for r in result if r["iou"] is not None]
             f1s = [r["f1"] for r in result if r["f1"] is not None]
+            rouge_ls = [r["rougeL"] for r in result if r["rougeL"] is not None]
+            bleus = [r["sacrebleu"] for r in result if r["sacrebleu"] is not None]
+
             avg_iou = sum(ious) / len(ious) if ious else 0
             avg_f1 = sum(f1s) / len(f1s) if f1s else 0
-
-            # Calculate ROUGE-L
-            scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
-            rouge_l_scores = [
-                scorer.score(gt, pred)["rougeL"].fmeasure
-                for pred, gt in zip(predicted_instr_list, ground_truth_instr_list)
-            ]
-            avg_rouge_l = (
-                sum(rouge_l_scores) / len(rouge_l_scores) if rouge_l_scores else 0
-            )
-
-            # Calculate SacreBLEU
-            if predicted_instr_list and ground_truth_instr_list:
-                bleu = sacrebleu.corpus_bleu(
-                    predicted_instr_list, [ground_truth_instr_list]
-                )
-                avg_bleu = bleu.score
-            else:
-                avg_bleu = 0
+            avg_rouge_l = sum(rouge_ls) / len(rouge_ls) if rouge_ls else 0
+            avg_bleu = sum(bleus) / len(bleus) if bleus else 0
 
             # Define output path
             output_path = os.path.join(dir, zipfile_name.replace(".zip", ".json"))
@@ -275,10 +263,6 @@ def calculate_metrics_from_zip(dir):
                     "Average SacreBLEU": avg_bleu,
                 },
                 "results": result,
-                "gt_ingredients": gt_ingredients_names,
-                "gen_ingredients": pred_ingredients_names,
-                "gt_indices": gt_indices,
-                "gen_indices": pred_indices,
             }
 
             # Write to JSON file
@@ -295,16 +279,8 @@ def calculate_metrics_from_folders(dir):
         print(f"Processing {folder_name}...")
 
         # Evaluate ingredient pairs
-        (
-            result,
-            predicted_instr_list,
-            ground_truth_instr_list,
-            gt_ingredients_names,
-            pred_ingredients_names,
-            gt_indices,
-            pred_indices,
-        ) = evaluate_ingredient_pairs(
-            data_folder=folder_path,
+        result = evaluate_ingredient_pairs(
+            data_folder=data_folder,
             full_ingr_path=full_vocab_path,
             brief_ingr_path=brief_vocab_path,
             vocab_size=len(ingr_vocab),
@@ -313,25 +289,13 @@ def calculate_metrics_from_folders(dir):
         # Calculate averages
         ious = [r["iou"] for r in result if r["iou"] is not None]
         f1s = [r["f1"] for r in result if r["f1"] is not None]
+        rouge_ls = [r["rougeL"] for r in result if r["rougeL"] is not None]
+        bleus = [r["sacrebleu"] for r in result if r["sacrebleu"] is not None]
+
         avg_iou = sum(ious) / len(ious) if ious else 0
         avg_f1 = sum(f1s) / len(f1s) if f1s else 0
-
-        # Calculate ROUGE-L
-        scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
-        rouge_l_scores = [
-            scorer.score(gt, pred)["rougeL"].fmeasure
-            for pred, gt in zip(predicted_instr_list, ground_truth_instr_list)
-        ]
-        avg_rouge_l = sum(rouge_l_scores) / len(rouge_l_scores) if rouge_l_scores else 0
-
-        # Calculate SacreBLEU
-        if predicted_instr_list and ground_truth_instr_list:
-            bleu = sacrebleu.corpus_bleu(
-                predicted_instr_list, [ground_truth_instr_list]
-            )
-            avg_bleu = bleu.score
-        else:
-            avg_bleu = 0
+        avg_rouge_l = sum(rouge_ls) / len(rouge_ls) if rouge_ls else 0
+        avg_bleu = sum(bleus) / len(bleus) if bleus else 0
 
         # Define output path
         output_path = os.path.join(dir, folder_name + ".json")
@@ -345,10 +309,6 @@ def calculate_metrics_from_folders(dir):
                 "Average SacreBLEU": avg_bleu,
             },
             "results": result,
-            "gt_ingredients": gt_ingredients_names,
-            "gen_ingredients": pred_ingredients_names,
-            "gt_indices": gt_indices,
-            "gen_indices": pred_indices,
         }
 
         # Write to JSON file
@@ -358,6 +318,7 @@ def calculate_metrics_from_folders(dir):
 
 # Usage:
 # dir = "path to your directory containing zip files or folders"
-# calculate_metrics_from_zip(dir)
+dir = "D:/InverseCookingTemp/Zip_according_to_retrieval"
+calculate_metrics_from_zip(dir)
 # or
 # calculate_metrics_from_folders(dir)

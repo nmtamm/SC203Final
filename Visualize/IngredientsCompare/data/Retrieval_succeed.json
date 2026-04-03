@@ -1,0 +1,136 @@
+[
+  {
+    "number": 19885,
+    "pair id for retrieval": "Pair20554",
+    "ground truth recipe id": "659b830785",
+    "image id": "Imagec4eeab7e5e.jpg",
+    "gt_ingredients": [
+      "peppercorn",
+      "peppercorn",
+      "peppercorn",
+      "peppercorn",
+      "allspice"
+    ],
+    "gt_indices": [
+      706,
+      706,
+      706,
+      706,
+      199
+    ],
+    "retrieved_ingredients": [
+      "peppercorn",
+      "peppercorn",
+      "peppercorn",
+      "peppercorn",
+      "allspice"
+    ],
+    "retrieved_indices": [
+      706,
+      706,
+      706,
+      706,
+      199
+    ],
+    "generated_ingredients": [
+      "onion",
+      "pepper",
+      "oil",
+      "tomato",
+      "clove",
+      "beet",
+      "vinegar",
+      "salt"
+    ],
+    "generated_indices": [
+      9,
+      10,
+      12,
+      166,
+      91,
+      675,
+      6,
+      7
+    ]
+  },
+  {
+    "number": 2914,
+    "pair id for retrieval": "Pair3009",
+    "ground truth recipe id": "0eca9d8f58",
+    "image id": "Image6a4c02bce5.jpg",
+    "gt_ingredients": [
+      "pepper",
+      "ham",
+      "basil",
+      "cheese"
+    ],
+    "gt_indices": [
+      10,
+      169,
+      13,
+      2
+    ],
+    "retrieved_ingredients": [
+      "pepper",
+      "ham",
+      "basil",
+      "cheese"
+    ],
+    "retrieved_indices": [
+      10,
+      169,
+      13,
+      2
+    ],
+    "generated_ingredients": [
+      "watermelon",
+      "juice",
+      "tomato",
+      "cucumber"
+    ],
+    "generated_indices": [
+      17,
+      22,
+      166,
+      11
+    ]
+  },
+  {
+    "number": 48467,
+    "pair id for retrieval": "Pair50048",
+    "ground truth recipe id": "f96bfbcf9d",
+    "image id": "Image50331b752a.jpg",
+    "gt_ingredients": [
+      "noodles",
+      "chocolate",
+      "pecans"
+    ],
+    "gt_indices": [
+      175,
+      129,
+      60
+    ],
+    "retrieved_ingredients": [
+      "noodles",
+      "chocolate",
+      "pecans"
+    ],
+    "retrieved_indices": [
+      175,
+      129,
+      60
+    ],
+    "generated_ingredients": [
+      "egg",
+      "butter",
+      "chips",
+      "sugar"
+    ],
+    "generated_indices": [
+      59,
+      33,
+      76,
+      30
+    ]
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "number": 46,
+    "pair id for retrieval": "Pair47",
+    "ground truth recipe id": "003e8990ab",
+    "image id": "Imageeca0643fa7.jpg",
+    "gt_instructions": [
+      "rim the edges of two margarita or daiquiri glasses by running one of the squeezed lime halves around each rim, putting a little sugar in a shallow bowl and rolling each glass around in the sugar until the rims are covered.",
+      "blend the peach, lime juice, rum and powdered sugar in a blender with about 20 ice cubes until all the ice is broken up and the mixture is smooth.",
+      "pour into the rimmed glasses and serve ice cold."
+    ],
+    "retrieved_instructions": [
+      "juice orange with papaya.",
+      "place juice and banana in a blender or food processor, and blend until smooth.",
+      "garnish with the orange twist.",
+      "pour into a tall glass and enjoy!"
+    ],
+    "generated_instructions": [
+      "Place banana slices in blender or food processor and process until smooth.",
+      "Add orange juice and ice cubes and process until smooth."
+    ]
+  },
+  {
+    "number": 1223,
+    "pair id for retrieval": "Pair1260",
+    "ground truth recipe id": "066d6925af",
+    "image id": "Image37ffa382d2.jpg",
+    "gt_instructions": [
+      "place frozen chicken tenders in crock pot.",
+      "mix italian dressing with cream of chicken soup.",
+      "put soup mix on top of chicken.",
+      "put cream cheese block on top -- do not stir!",
+      "cook on low 6-8 hours.",
+      "when cream cheese gets soft enough then stir it into soup mixture.",
+      "serve over noodles."
+    ],
+    "retrieved_instructions": [
+      "in a small bowl combine mayo, lemon juice, black pepper, garlic salt and minced garlic.",
+      "mix well.",
+      "put the aioli in the fridge and let it chill before serving.",
+      "for fries: amounts and seasonings are completely up to you.",
+      "i like to use parsley, black pepper and garlic salt on my fries and then dip them in this aioli."
+    ],
+    "generated_instructions": [
+      "Place all ingredients into a small mixing bowl and whisk until butter is melted.",
+      "Cover and chill for at least 1 hour or up to 24 hours before serving.",
+      "Serve over seafood, seafood, chicken, or seafood."
+    ]
+  }
+]

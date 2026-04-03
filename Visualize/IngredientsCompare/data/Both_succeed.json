@@ -1,0 +1,222 @@
+[
+  {
+    "number": 1206,
+    "pair id for retrieval": "Pair1243",
+    "ground truth recipe id": "065441d199",
+    "image id": "Imagef9e415b34e.jpg",
+    "gt_ingredients": [
+      "butter",
+      "sugar",
+      "puree",
+      "molasses",
+      "egg",
+      "extract",
+      "flour",
+      "baking_soda",
+      "cinnamon",
+      "ginger",
+      "clove",
+      "salt"
+    ],
+    "gt_indices": [
+      33,
+      30,
+      229,
+      250,
+      59,
+      69,
+      34,
+      36,
+      35,
+      41,
+      91,
+      7
+    ],
+    "retrieved_ingredients": [
+      "butter",
+      "sugar",
+      "puree",
+      "molasses",
+      "egg",
+      "extract",
+      "flour",
+      "baking_soda",
+      "cinnamon",
+      "ginger",
+      "clove",
+      "salt"
+    ],
+    "retrieved_indices": [
+      33,
+      30,
+      229,
+      250,
+      59,
+      69,
+      34,
+      36,
+      35,
+      41,
+      91,
+      7
+    ],
+    "generated_ingredients": [
+      "sugar",
+      "flour",
+      "egg",
+      "baking_soda",
+      "cinnamon",
+      "molasses",
+      "ginger",
+      "salt",
+      "butter",
+      "clove"
+    ],
+    "generated_indices": [
+      30,
+      34,
+      59,
+      36,
+      35,
+      250,
+      41,
+      7,
+      33,
+      91
+    ]
+  },
+  {
+    "number": 2052,
+    "pair id for retrieval": "Pair2119",
+    "ground truth recipe id": "0a6760e206",
+    "image id": "Imageb8401ee7e7.jpg",
+    "gt_ingredients": [
+      "yeast",
+      "water",
+      "sugar",
+      "egg",
+      "butter",
+      "water",
+      "sugar",
+      "flour",
+      "milk",
+      "salt"
+    ],
+    "gt_indices": [
+      251,
+      15,
+      30,
+      59,
+      33,
+      15,
+      30,
+      34,
+      65,
+      7
+    ],
+    "retrieved_ingredients": [
+      "water",
+      "yeast",
+      "sugar",
+      "butter",
+      "egg",
+      "salt",
+      "flour",
+      "butter"
+    ],
+    "retrieved_indices": [
+      15,
+      251,
+      30,
+      33,
+      59,
+      7,
+      34,
+      33
+    ],
+    "generated_ingredients": [
+      "salt",
+      "flour",
+      "sugar",
+      "yeast",
+      "water",
+      "egg",
+      "butter",
+      "milk"
+    ],
+    "generated_indices": [
+      7,
+      34,
+      30,
+      251,
+      15,
+      59,
+      33,
+      65
+    ]
+  },
+  {
+    "number": 3927,
+    "pair id for retrieval": "Pair4062",
+    "ground truth recipe id": "13ce97fe33",
+    "image id": "Image43862f3075.jpg",
+    "gt_ingredients": [
+      "tomato",
+      "sugar",
+      "salt",
+      "pepper",
+      "vinegar",
+      "oil",
+      "onion",
+      "mint"
+    ],
+    "gt_indices": [
+      166,
+      30,
+      7,
+      10,
+      6,
+      12,
+      9,
+      137
+    ],
+    "retrieved_ingredients": [
+      "tomato",
+      "sugar",
+      "salt",
+      "pepper",
+      "vinegar",
+      "oil",
+      "onion",
+      "mint"
+    ],
+    "retrieved_indices": [
+      166,
+      30,
+      7,
+      10,
+      6,
+      12,
+      9,
+      137
+    ],
+    "generated_ingredients": [
+      "onion",
+      "pepper",
+      "tomato",
+      "vinegar",
+      "oil",
+      "salt",
+      "sugar"
+    ],
+    "generated_indices": [
+      9,
+      10,
+      166,
+      6,
+      12,
+      7,
+      30
+    ]
+  }
+]

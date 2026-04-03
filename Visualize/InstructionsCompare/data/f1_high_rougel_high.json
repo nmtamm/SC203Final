@@ -1,0 +1,68 @@
+[
+  {
+    "number": 5079,
+    "pair id for retrieval": "Pair5259",
+    "ground truth recipe id": "19ed2a4d54",
+    "image id": "Imagec4d08faa1e.jpg",
+    "gt_instructions": [
+      "heat oil in large nonstick skillet on medium-high heat.",
+      "add chicken; cover.",
+      "cook 4 minutes on each side or until cooked through.",
+      "remove chicken from skillet.",
+      "(note: increase oil to 2 tbsp.",
+      "if using regular skillet.)",
+      "add broth to skillet.",
+      "bring to boil.",
+      "stir in rice, broccoli and velveeta.",
+      "top with chicken; cover.",
+      "cook on low heat 5 minutes.",
+      "stir until velveeta is melted."
+    ],
+    "retrieved_instructions": [
+      "heat oil in large nonstick skillet on medium-high heat.",
+      "add chicken; cover.",
+      "cook 4 minutes on each side or until cooked through.",
+      "remove chicken from skillet.",
+      "(note: increase oil to 2 tbsp.",
+      "if using regular skillet.)",
+      "add broth to skillet.",
+      "bring to boil.",
+      "stir in rice, broccoli and velveeta.",
+      "top with chicken; cover.",
+      "cook on low heat 5 minutes.",
+      "stir until velveeta is melted."
+    ],
+    "generated_instructions": [
+      "Heat oil in large nonstick skillet on medium-high heat.",
+      "Add chicken; cook and stir 6 min.",
+      "On each side or until done (165 degrees f).",
+      "Add broth, water, broccoli and rice; stir.",
+      "Bring to boil.",
+      "Cover; simmer on low heat 12 min.",
+      "Or until liquid is almost absorbed.",
+      "Remove from heat.",
+      "Stir in parmesan cheese until melted."
+    ]
+  },
+  {
+    "number": 13429,
+    "pair id for retrieval": "Pair13893",
+    "ground truth recipe id": "4401a97284",
+    "image id": "Image952d8c2ed7.jpg",
+    "gt_instructions": [
+      "cook ingredients in saucepan on medium-low heat 5 min.",
+      "or until chocolate is completely melted and mixture is well blended, stirring frequently."
+    ],
+    "retrieved_instructions": [
+      "cook ingredients in saucepan on medium-low heat 5 min.",
+      "or until chocolate is completely melted and mixture is well blended, stirring frequently."
+    ],
+    "generated_instructions": [
+      "Microwave chocolate and milk in large microwaveable bowl on high 2 min.",
+      "Or until chocolate is almost melted, stirring after 1-1/2 min.",
+      "Stir until chocolate is completely melted.",
+      "Add coffee; stir until well blended.",
+      "Serve immediately."
+    ]
+  }
+]

@@ -2,8 +2,15 @@ import json
 import torch
 import os
 import pickle
-from src.utils.metrics import softIoU
-from src.utils.metrics import update_error_types, compute_metrics
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from InverseCooking.src.utils.metrics import (
+    softIoU,
+    update_error_types,
+    compute_metrics,
+)
 from rouge_score import rouge_scorer
 import sacrebleu
 import zipfile
@@ -176,6 +183,8 @@ def evaluate_ingredient_pairs(data_folder, full_ingr_path, brief_ingr_path, voca
                     "f1": ret_metrics["f1"][0] if ret_metrics["f1"] else None,
                     "rougeL": rouge_l,
                     "sacrebleu": bleu,
+                    "predicted_instructions": pred_instrs,
+                    "ground_truth_instructions": gt_instrs,
                 }
             )
 
@@ -188,7 +197,8 @@ vocab_path = os.path.join(root_dir, "data", "ingr_vocab.pkl")
 with open(vocab_path, "rb") as f:
     ingr_vocab = pickle.load(f)
 
-full_vocab_path = "path to your recipe1m_vocab_ingrs.json"
+# full_vocab_path = "your path to recipe1m_vocab_ingrs.json"
+full_vocab_path = os.path.join(root_dir, "data", "recipe1m_vocab_ingrs.json")
 brief_vocab_path = os.path.join(root_dir, "data", "ingr_vocab.json")
 
 
@@ -303,6 +313,7 @@ def calculate_metrics_from_folders(data_folder):
 
 # Usage:
 # dir = "path to your directory folder or rootfolder containing subfolders"
+dir = "D:/Revamping/output2"
 # calculate_metrics_from_folder(dir)
 # or
-# calculate_metrics_from_folders(dir)
+calculate_metrics_from_folders(dir)

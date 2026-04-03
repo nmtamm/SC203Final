@@ -1,13 +1,18 @@
 import json
 
-not_found_path = (
-    "path to your txt file containing retrieval pairs not found due to Recipe1m_test"
-)
-image_path = "path to your txt file containing filtered image names by choosing the first image for each recipe"
-output_path = "path to your output JSON file containing number, pair id for retrieval, ground truth recipe id, image id"
-retrieval_ground_truth_recipe_id_path = (
-    "path to your txt file containing all ground truth recipe ids for retrieval"
-)
+"""
+This file is used to map the images that Inverse Cooking used, the pair IDs for retrieval and ground truth recipe IDs.
+The output JSON file will contain the following fields:
+- "number": the new order of the pairs after filtering out the not found ones
+- "pair id for retrieval": the original pair ID in the format "Pair{original_index}"
+- "ground truth recipe id": the ground truth recipe ID corresponding to the pair
+- "image id": the image ID corresponding to the pair (with "Image" prefix and .jpg extension)
+"""
+
+not_found_path = "data/retrieval_pair_not_found_idxs.txt"
+image_path = "data/filtered_image_names_inverse.txt"
+output_path = "results/mapping_retrieval_pairs_with_images.json"
+retrieval_ground_truth_recipe_id_path = "../Retrieval/retrieval_pairs.json"
 
 # Read not found indices (1-based)
 not_found_pairs_indices = set()
